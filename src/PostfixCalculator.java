@@ -7,19 +7,24 @@ public class PostfixCalculator {
 
     private final DoubleStack doubleStack;
     private HashMap<String, Operator> operatorMap;
+    Addition addition = new Addition();
+    Subtraction subtraction = new Subtraction();
+    Multiplication multiplication = new Multiplication();
+    Division division = new Division();
+    Print print = new Print();
 
     public PostfixCalculator() {
         operatorMap = new HashMap<>();
         this.operatorMap.put("add", new Addition());
         this.operatorMap.put("+", new Addition());
-        this.operatorMap.put("sub", new Addition());
-        this.operatorMap.put("-", new Addition());
-        this.operatorMap.put("mult", new Addition());
-        this.operatorMap.put("*", new Addition());
-        this.operatorMap.put("div", new Addition());
-        this.operatorMap.put("/", new Addition());
-        this.operatorMap.put("print", new Addition());
-        this.operatorMap.put("=", new Addition());
+        this.operatorMap.put("sub", new Subtraction());
+        this.operatorMap.put("-", new Subtraction());
+        this.operatorMap.put("mult", new Multiplication());
+        this.operatorMap.put("*", new Multiplication());
+        this.operatorMap.put("div", new Division());
+        this.operatorMap.put("/", new Division());
+        this.operatorMap.put("print", new Print());
+        this.operatorMap.put("=", new Print());
         doubleStack = new DoubleStack();
 
     }
@@ -30,46 +35,41 @@ public class PostfixCalculator {
 
     public void evalOperator(String operator) {
         List<Double> operands = new LinkedList<>();
-        Addition addition = new Addition();
-        Subtraction subtraction = new Subtraction();
-        Multiplication multiplication = new Multiplication();
-        Division division = new Division();
-        Print print = new Print();
         operatorMap.get(operator);
 
         while (!doubleStack.isEmpty()) {
             double val = doubleStack.pop();
             operands.add(val);
         }
-        if (operator.equals("+") || operator.equals("add")) {
-            double sum = addition.eval(operands);
-            doubleStack.push(sum);
-            System.out.println(sum);
+
+        switch (operator) {
+            case "add":
+            case "+":
+                double sum = addition.eval(operands);
+                doubleStack.push(sum);
+                break;
+            case "sub":
+            case "-":
+                double difference = subtraction.eval(operands);
+                doubleStack.push(difference);
+                break;
+            case "mult":
+            case "*":
+                double product = multiplication.eval(operands);
+                doubleStack.push(product);
+                break;
+            case "div":
+            case "/":
+                double quotient = division.eval(operands);
+                doubleStack.push(quotient);
+                break;
+            case "print":
+            case "=":
+                double result = print.eval(operands);
+                doubleStack.push(result);
         }
 
-        if (operator.equals("-") || operator.equals("sub")) {
-            double difference = subtraction.eval(operands);
-            doubleStack.push(difference);
-            System.out.println(difference);
-        }
-
-        if (operator.equals("*") || operator.equals("mult")) {
-            double product = multiplication.eval(operands);
-            doubleStack.push(product);
-            System.out.println(product);
-        }
-
-        if (operator.equals("/") || operator.equals("div")) {
-            double quotient = division.eval(operands);
-            doubleStack.push(quotient);
-            System.out.println(quotient);
-        }
-
-        if (operator.equals("=") || operator.equals("print")) {
-            double result = print.eval(operands);
-            doubleStack.push(result);
-            System.out.println(result);
-        }
+        System.out.println(doubleStack.peek());
 
     }
 
@@ -134,7 +134,7 @@ public class PostfixCalculator {
 
         @Override
         public double eval(List<Double> args) {
-            return  args.get(0);
+            return args.get(0);
         }
     }
 
